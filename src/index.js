@@ -34,7 +34,7 @@ function fetchImages(request) {
         .then(r => gallery.insertAdjacentHTML('beforeend', r))
         .then(() => {const links = gallery.querySelectorAll('.gallery__item');
         links.forEach(el => el.addEventListener('click', e => e.preventDefault()));
-        let lightbox = new SimpleLightbox('.gallery__item', {captionDelay: "250"});})
+        let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});})
         .then(page += 1)
         .catch(console.log);
 }
@@ -48,16 +48,16 @@ function createImagesListMarkup(items) {
   </a>
   <div class="info">
     <p class="info-item">
-      <b>Likes</b>${likes}
+      <b>Likes</b><span>${likes}</span>
     </p>
     <p class="info-item">
-      <b>Views</b>${views}
+      <b>Views</b><span>${views}</span>
     </p>
     <p class="info-item">
-      <b>Comments</b>${comments}
+      <b>Comments</b><span>${comments}</span>
     </p>
     <p class="info-item">
-      <b>Downloads</b>${downloads}
+      <b>Downloads</b><span>${downloads}</span>
     </p>
   </div>
 </div>
