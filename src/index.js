@@ -41,7 +41,6 @@ function onFormSubmit(event) {
       if (r.hits.length === 0) {
         throw new Error('Sorry, there are no images matching your search query. Please try again.');
       } else {
-        console.log(page);
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
         };
@@ -56,8 +55,10 @@ function onFormSubmit(event) {
     summaryHits = page * 40;
     page += 1;
     })
-    .catch((error) => Notify.failure(error));
+    .catch((error) => console.log(error));
 }
+
+// Notify.failure
 
 function onFormChange() {
     page = 1;
