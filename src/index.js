@@ -7,28 +7,20 @@ const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 let page = 1;
 let summaryHits = 0;
-
-// const { height: cardHeight } = document
-// .querySelector(".gallery")
-// .firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
+let name = '';
 
 form.addEventListener('submit', onFormSubmit);
 form.addEventListener('change', onFormChange);
-loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick(name));
 
-function onLoadMoreBtnClick() {
-
+function onLoadMoreBtnClick(request) {
+  fetchImages(request)
 }
 
 function onFormSubmit(event) {
   event.preventDefault();
   loadMoreBtn.classList.add('is-hidden');
-  const name = event.currentTarget.elements.searchQuery.value.trim();
+   name = event.currentTarget.elements.searchQuery.value.trim();
 
   if (summaryHits > 500) {
     Notify.warning("We're sorry, but you've reached the end of search results.")
@@ -44,18 +36,44 @@ function onFormSubmit(event) {
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
         };
-        return createImagesListMarkup(r.hits)
+        return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(r.hits))
       }
     })
-    .then(r => gallery.insertAdjacentHTML('beforeend', r))
-    .then(() => {const links = gallery.querySelectorAll('.gallery__item');
-    links.forEach(el => el.addEventListener('click', e => e.preventDefault()));
-    let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});
-    loadMoreBtn.classList.remove('is-hidden');
-    summaryHits = page * 40;
-    page += 1;
+    .then(() => {
+      preventDefaultOnLinks();
+      createSimpleGallery();
+      loadMoreMakeVisible();
+      increaseCounters();
+      makeSmoothScroll();
     })
     .catch(error => Notify.failure(error));
+}
+
+function preventDefaultOnLinks() {
+  const links = gallery.querySelectorAll('.gallery__item');
+  links.forEach(el => el.addEventListener('click', e => e.preventDefault()));
+};
+
+function createSimpleGallery() {
+  let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});
+};
+
+function loadMoreMakeVisible() {
+  loadMoreBtn.classList.remove('is-hidden');
+};
+
+function increaseCounters() {
+  summaryHits = page * 40;
+  page += 1;
+};
+
+function makeSmoothScroll() {
+  const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+  });
 }
 
 function onFormChange() {
