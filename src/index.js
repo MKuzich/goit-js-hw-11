@@ -11,16 +11,24 @@ let name = '';
 
 form.addEventListener('submit', onFormSubmit);
 form.addEventListener('change', onFormChange);
-loadMoreBtn.addEventListener('click', onLoadMoreBtnClick(name));
+loadMoreBtn.addEventListener('click', onLoadMoreBtnClick());
 
-function onLoadMoreBtnClick(request) {
-  fetchImages(request)
+function onLoadMoreBtnClick() {
+  fetchImages(name)
+    .then((r) => imagesDrawning(r.hits))
+    .then(() => {
+      preventDefaultOnLinks();
+      createSimpleGallery();
+      increaseCounters();
+      makeSmoothScroll();
+    })
+    .catch(error => Notify.failure(error));
 }
 
 function onFormSubmit(event) {
   event.preventDefault();
   loadMoreBtn.classList.add('is-hidden');
-   name = event.currentTarget.elements.searchQuery.value.trim();
+  name = event.currentTarget.elements.searchQuery.value.trim();
 
   if (summaryHits > 500) {
     Notify.warning("We're sorry, but you've reached the end of search results.")
@@ -36,7 +44,7 @@ function onFormSubmit(event) {
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
         };
-        return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(r.hits))
+          imagesDrawning(r.hits);
       }
     })
     .then(() => {
@@ -96,6 +104,10 @@ function fetchImages(request) {
       }
       return response.json();
     });
+};
+
+function imagesDrawning(imagesArray) {
+  return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(imagesArray))
 };
 
 function createImagesListMarkup(items) {
