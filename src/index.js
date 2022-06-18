@@ -5,12 +5,13 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
+
 let page = 1;
 let summaryHits = 0;
 let name = '';
 
 form.addEventListener('submit', onFormSubmit);
-form.addEventListener('change', onFormChange);
+form.addEventListener('input', onFormInput);
 
 function onLoadMoreBtnClick() {
   console.log('before fetch load more');
@@ -22,7 +23,7 @@ function onLoadMoreBtnClick() {
       increaseCounters();
       makeSmoothScroll();
     })
-    .catch(error => Notify.failure(error));
+    .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
     console.log('after fetch load more');
 };
 
@@ -40,7 +41,7 @@ function onFormSubmit(event) {
   fetchImages(name)
     .then(r => {
       if (r.hits.length === 0) {
-        throw new Error('Sorry, there are no images matching your search query. Please try again.');
+        throw new Error();
       } else {
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
@@ -55,7 +56,7 @@ function onFormSubmit(event) {
       increaseCounters();
       makeSmoothScroll();
     })
-    .catch(error => Notify.failure(error));
+    .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
 }
 
 function preventDefaultOnLinks() {
@@ -64,7 +65,7 @@ function preventDefaultOnLinks() {
 };
 
 function createSimpleGallery() {
-  let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});
+  return new SimpleLightbox('.photo-card a', {captionDelay: "250"});
 };
 
 function loadMoreMakeVisible() {
@@ -82,6 +83,11 @@ function increaseCounters() {
   page += 1;
 };
 
+function resetCounters() {
+  page = 1;
+  summaryHits = 0;
+}
+
 function makeSmoothScroll() {
   const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
 
@@ -89,18 +95,18 @@ function makeSmoothScroll() {
     top: cardHeight * 2,
     behavior: "smooth",
   });
-}
+};
 
-function onFormChange() {
-    page = 1;
-    summaryHits = 0;
-    gallery.innerHTML = "";
+function onFormInput() {
+  gallery.innerHTML = "";
+    resetCounters();
     requestChange(event);
+    loadMoreMakeHidden();
 }
 
 function requestChange(event) {
   name = event.currentTarget.elements.searchQuery.value.trim();
-}
+};
 
 function fetchImages(request) {
   const API_KEY = '27957885-8dff7fee3c243073fce7c6825';
