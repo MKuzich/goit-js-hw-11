@@ -14,6 +14,7 @@ form.addEventListener('change', onFormChange);
 loadMoreBtn.addEventListener('click', onLoadMoreBtnClick());
 
 function onLoadMoreBtnClick() {
+  console.log('before fetch load more');
   fetchImages(name)
     .then((r) => imagesDrawning(r.hits))
     .then(() => {
@@ -23,12 +24,13 @@ function onLoadMoreBtnClick() {
       makeSmoothScroll();
     })
     .catch(error => Notify.failure(error));
-}
+    console.log('after fetch load more');
+};
 
 function onFormSubmit(event) {
   event.preventDefault();
   loadMoreBtn.classList.add('is-hidden');
-  name = event.currentTarget.elements.searchQuery.value.trim();
+  requestChange(event);
 
   if (summaryHits > 500) {
     Notify.warning("We're sorry, but you've reached the end of search results.")
@@ -88,6 +90,11 @@ function onFormChange() {
     page = 1;
     summaryHits = 0;
     gallery.innerHTML = "";
+    requestChange(event);
+}
+
+function requestChange(event) {
+  name = event.currentTarget.elements.searchQuery.value.trim();
 }
 
 function fetchImages(request) {
