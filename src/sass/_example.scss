@@ -26,16 +26,20 @@
 //   background-size: cover;
 //   background-position: center;
 // }
+body {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
 
 .gallery {
   padding: 50px;
   display: grid;
   gap: 30px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.gallery__item img {
-  width: 100%;
+  &__item img {
+    width: 100%;
+  }
 }
 
 .search-form {
@@ -90,4 +94,13 @@ button {
 
 .submit-btn {
   margin-left: 10px;
+}
+
+.load-more {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.is-hidden {
+  display: none;
 }

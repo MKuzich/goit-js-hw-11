@@ -11,6 +11,7 @@ form.addEventListener('change', onFormChange);
 
 function onFormSubmit(event) {
     event.preventDefault();
+    loadMoreBtn.classList.add('is-hidden');
     const name = event.currentTarget.elements.searchQuery.value.trim();
 
     fetchImages(name);
@@ -34,9 +35,10 @@ function fetchImages(request) {
         .then(r => gallery.insertAdjacentHTML('beforeend', r))
         .then(() => {const links = gallery.querySelectorAll('.gallery__item');
         links.forEach(el => el.addEventListener('click', e => e.preventDefault()));
-        let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});})
-        .then(page += 1)
-        .catch(console.log);
+        let lightbox = new SimpleLightbox('.photo-card a', {captionDelay: "250"});
+        loadMoreBtn.classList.remove('is-hidden');
+        page += 1})
+        .catch(Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
 }
 
 function createImagesListMarkup(items) {
