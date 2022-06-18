@@ -57,7 +57,7 @@ function onFormSubmit(event) {
       makeSmoothScroll();
     })
     .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
-}
+};
 
 function preventDefaultOnLinks() {
   const links = gallery.querySelectorAll('.gallery__item');
@@ -86,7 +86,7 @@ function increaseCounters() {
 function resetCounters() {
   page = 1;
   summaryHits = 0;
-}
+};
 
 function makeSmoothScroll() {
   const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
@@ -102,7 +102,7 @@ function onFormInput() {
     resetCounters();
     requestChange(event);
     loadMoreMakeHidden();
-}
+};
 
 function requestChange(event) {
   name = event.currentTarget.elements.searchQuery.value.trim();
@@ -152,6 +152,6 @@ function createImagesListMarkup(items) {
 </div>
   `})
   .join("")
-  }
+};
 
 
