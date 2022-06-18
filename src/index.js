@@ -11,7 +11,6 @@ let name = '';
 
 form.addEventListener('submit', onFormSubmit);
 form.addEventListener('change', onFormChange);
-loadMoreBtn.addEventListener('click', onLoadMoreBtnClick());
 
 function onLoadMoreBtnClick() {
   console.log('before fetch load more');
@@ -29,12 +28,12 @@ function onLoadMoreBtnClick() {
 
 function onFormSubmit(event) {
   event.preventDefault();
-  loadMoreBtn.classList.add('is-hidden');
+  loadMoreMakeHidden();
   requestChange(event);
 
   if (summaryHits > 500) {
-    Notify.warning("We're sorry, but you've reached the end of search results.")
-    loadMoreBtn.classList.add('is-hidden');
+    Notify.warning("We're sorry, but you've reached the end of search results.");
+    loadMoreMakeHidden();
     return;
   }
 
@@ -70,6 +69,12 @@ function createSimpleGallery() {
 
 function loadMoreMakeVisible() {
   loadMoreBtn.classList.remove('is-hidden');
+  loadMoreBtn.addEventListener('click', onLoadMoreBtnClick());
+};
+
+function loadMoreMakeHidden() {
+  loadMoreBtn.classList.add('is-hidden');
+  loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick());
 };
 
 function increaseCounters() {
