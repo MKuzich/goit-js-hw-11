@@ -55,10 +55,8 @@ function onFormSubmit(event) {
     summaryHits = page * 40;
     page += 1;
     })
-    .catch((error) => console.log(error));
+    .catch(error => Notify.failure(error));
 }
-
-// Notify.failure
 
 function onFormChange() {
     page = 1;
