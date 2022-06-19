@@ -2,6 +2,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 
 
 const form = document.querySelector('#search-form');
@@ -9,6 +10,8 @@ const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 const inputField = document.querySelector('input');
 const clientScreenHeight = document.documentElement.clientHeight + 200;
+const DELAY = 250;
+const debounceOptions = {leading: true, trailing: false};
 
 let page = 1;
 let summaryHits = 0;
@@ -17,9 +20,9 @@ let simpleGallery = null;
 
 createSimpleGallery();
 
-form.addEventListener('submit', throttle(onFormSubmit, 250));
-inputField.addEventListener('input', onFormInput);
-window.addEventListener('scroll', throttle(loadMoreOnScroll, 250));
+form.addEventListener('submit', throttle(onFormSubmit, DELAY));
+inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
+window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
 
 function loadMoreOnScroll() {
   if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight) {
