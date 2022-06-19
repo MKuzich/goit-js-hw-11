@@ -36,9 +36,14 @@ body {
   padding: 50px;
   display: grid;
   gap: 30px;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  &__item img {
-    width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 18vw;
+  &__item {
+    display: block;
+    overflow: hidden;
+    img {
+      width: 100%;
+    }
   }
 }
 
@@ -68,6 +73,7 @@ body {
 .info {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   &-item {
     display: flex;
     flex-direction: column;
