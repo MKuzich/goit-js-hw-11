@@ -1,6 +1,8 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import throttle from 'lodash.throttle';
+
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
@@ -15,9 +17,9 @@ let simpleGallery = null;
 
 createSimpleGallery();
 
-form.addEventListener('submit', onFormSubmit);
+form.addEventListener('submit', throttle(onFormSubmit, 250));
 inputField.addEventListener('input', onFormInput);
-window.addEventListener('scroll', loadMoreOnScroll);
+window.addEventListener('scroll', throttle(loadMoreOnScroll, 250));
 
 function loadMoreOnScroll() {
   if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight) {
