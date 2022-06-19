@@ -10,6 +10,9 @@ const inputField = document.querySelector('input');
 let page = 1;
 let summaryHits = 0;
 let name = '';
+let simpleGallery = null;
+
+createSimpleGallery();
 
 form.addEventListener('submit', onFormSubmit);
 inputField.addEventListener('input', onFormInput);
@@ -19,7 +22,7 @@ function onLoadMoreBtnClick() {
     .then((r) => imagesDrawning(r.hits))
     .then(() => {
       preventDefaultOnLinks();
-      createSimpleGallery();
+      refreshSimpleGallery();
       increaseCounters();
       makeSmoothScroll();
     })
@@ -50,7 +53,7 @@ function onFormSubmit(event) {
     })
     .then(() => {
       preventDefaultOnLinks();
-      createSimpleGallery();
+      refreshSimpleGallery();
       loadMoreMakeVisible();
       increaseCounters();
       makeSmoothScroll();
@@ -64,7 +67,11 @@ function preventDefaultOnLinks() {
 };
 
 function createSimpleGallery() {
-  return new SimpleLightbox('.photo-card a', {captionDelay: "250"});
+  return simpleGallery = new SimpleLightbox('.photo-card a');
+};
+
+function refreshSimpleGallery() {
+  simpleGallery.refresh();
 };
 
 function loadMoreMakeVisible() {
