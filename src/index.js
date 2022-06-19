@@ -5,16 +5,16 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
+const inputField = document.querySelector('input');
 
 let page = 1;
 let summaryHits = 0;
 let name = '';
 
 form.addEventListener('submit', onFormSubmit);
-form.addEventListener('input', onFormInput);
+inputField.addEventListener('input', onFormInput);
 
 function onLoadMoreBtnClick() {
-  console.log('before fetch load more');
   fetchImages(name)
     .then((r) => imagesDrawning(r.hits))
     .then(() => {
@@ -24,7 +24,6 @@ function onLoadMoreBtnClick() {
       makeSmoothScroll();
     })
     .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
-    console.log('after fetch load more');
 };
 
 function onFormSubmit(event) {
@@ -70,12 +69,12 @@ function createSimpleGallery() {
 
 function loadMoreMakeVisible() {
   loadMoreBtn.classList.remove('is-hidden');
-  loadMoreBtn.addEventListener('click', onLoadMoreBtnClick());
+  loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 };
 
 function loadMoreMakeHidden() {
+  loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
   loadMoreBtn.classList.add('is-hidden');
-  loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick());
 };
 
 function increaseCounters() {
@@ -99,10 +98,14 @@ function makeSmoothScroll() {
 
 function onFormInput() {
   gallery.innerHTML = "";
-    resetCounters();
-    requestChange(event);
-    loadMoreMakeHidden();
+  resetCounters();
+  onInputChange(event);
+  loadMoreMakeHidden();
 };
+
+function onInputChange(event) {
+  name = event.currentTarget.value.trim();
+}
 
 function requestChange(event) {
   name = event.currentTarget.elements.searchQuery.value.trim();
@@ -121,7 +124,8 @@ function fetchImages(request) {
         throw new Error(response.status);
       }
       return response.json();
-    });
+    })
+    .catch(console.log);
 };
 
 function imagesDrawning(imagesArray) {
