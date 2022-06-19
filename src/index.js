@@ -6,6 +6,7 @@ const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 const inputField = document.querySelector('input');
+const clientScreenHeight = document.documentElement.clientHeight + 200;
 
 let page = 1;
 let summaryHits = 0;
@@ -19,10 +20,10 @@ inputField.addEventListener('input', onFormInput);
 window.addEventListener('scroll', loadMoreOnScroll);
 
 function loadMoreOnScroll() {
-  if (document.documentElement.getBoundingClientRect().bottom < 1600) {
+  if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight) {
     onLoadMoreBtnClick();
   }
-}
+};
 
 function onLoadMoreBtnClick() {
   fetchImages(name)
