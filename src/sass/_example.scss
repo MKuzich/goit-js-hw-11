@@ -88,6 +88,7 @@ button {
   font-size: inherit;
   &:hover,
   &:focus {
+    color: rgb(226, 227, 240);
     background-color: rgb(59, 132, 192);
     cursor: pointer;
   }
