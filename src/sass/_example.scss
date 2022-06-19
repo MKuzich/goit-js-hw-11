@@ -73,8 +73,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 0 1px grey;
-  &:hover,
-  &:focus {
+  &:hover {
     box-shadow: 0 0 3px grey;
   }
 }
