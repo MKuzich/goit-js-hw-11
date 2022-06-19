@@ -16,6 +16,13 @@ createSimpleGallery();
 
 form.addEventListener('submit', onFormSubmit);
 inputField.addEventListener('input', onFormInput);
+window.addEventListener('scroll', loadMoreOnScroll);
+
+function loadMoreOnScroll() {
+  if (document.documentElement.getBoundingClientRect().bottom < 1400) {
+    onLoadMoreBtnClick();
+  }
+}
 
 function onLoadMoreBtnClick() {
   fetchImages(name)
