@@ -19,7 +19,7 @@ inputField.addEventListener('input', onFormInput);
 window.addEventListener('scroll', loadMoreOnScroll);
 
 function loadMoreOnScroll() {
-  if (document.documentElement.getBoundingClientRect().bottom < 1400) {
+  if (document.documentElement.getBoundingClientRect().bottom < 1600) {
     onLoadMoreBtnClick();
   }
 }
