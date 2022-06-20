@@ -51,12 +51,16 @@ function onFormSubmit(event) {
     Notify.warning("We're sorry, but you've reached the end of search results.");
     loadMoreMakeHidden();
     return;
-  }
+  };
+
+  if (name === "") {
+    return;
+  };
 
   fetchImages(name)
     .then(r => {
       if (r.hits.length === 0) {
-        throw new Error();
+        throw new Error(Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
       } else {
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
@@ -71,7 +75,7 @@ function onFormSubmit(event) {
       increaseCounters();
       makeSmoothScroll();
     })
-    .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
+    .catch(error);
 };
 
 function preventDefaultOnLinks() {
