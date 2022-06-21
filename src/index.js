@@ -3,11 +3,10 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
-
+import axios from 'axios';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
-const loadMoreBtn = document.querySelector('.load-more');
 const inputField = document.querySelector('input');
 const clientScreenHeight = document.documentElement.clientHeight + 200;
 const DELAY = 250;
@@ -25,14 +24,9 @@ inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOption
 window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
 
 function loadMoreOnScroll() {
-  if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight) {
-    onLoadMoreBtnClick();
-  }
-};
-
-function onLoadMoreBtnClick() {
-  fetchImages(name)
-    .then((r) => imagesDrawning(r.hits))
+  if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight && summaryHits < 500) {
+    fetchImages(name)
+    .then((r) => drawImages(r.hits))
     .then(() => {
       preventDefaultOnLinks();
       refreshSimpleGallery();
@@ -40,16 +34,15 @@ function onLoadMoreBtnClick() {
       makeSmoothScroll();
     })
     .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
+  }
 };
 
 function onFormSubmit(event) {
   event.preventDefault();
-  loadMoreMakeHidden();
   requestChange(event);
 
   if (summaryHits > 500) {
     Notify.warning("We're sorry, but you've reached the end of search results.");
-    loadMoreMakeHidden();
     return;
   };
 
@@ -60,22 +53,21 @@ function onFormSubmit(event) {
   fetchImages(name)
     .then(r => {
       if (r.hits.length === 0) {
-        throw new Error(Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
+        throw new Error('Sorry, there are no images matching your search query. Please try again.');
       } else {
         if (page === 1) {
           Notify.success(`Hooray! We found ${r.totalHits} images.`);
         };
-          imagesDrawning(r.hits);
+          drawImages(r.hits);
       }
     })
     .then(() => {
       preventDefaultOnLinks();
       refreshSimpleGallery();
-      loadMoreMakeVisible();
       increaseCounters();
       makeSmoothScroll();
     })
-    .catch(error);
+    .catch(error => Notify.failure(error));
 };
 
 function preventDefaultOnLinks() {
@@ -89,16 +81,6 @@ function createSimpleGallery() {
 
 function refreshSimpleGallery() {
   simpleGallery.refresh();
-};
-
-function loadMoreMakeVisible() {
-  loadMoreBtn.classList.remove('is-hidden');
-  loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
-};
-
-function loadMoreMakeHidden() {
-  loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
-  loadMoreBtn.classList.add('is-hidden');
 };
 
 function increaseCounters() {
@@ -124,7 +106,6 @@ function onFormInput() {
   gallery.innerHTML = "";
   resetCounters();
   onInputChange(event);
-  loadMoreMakeHidden();
 };
 
 function onInputChange(event) {
@@ -136,11 +117,17 @@ function requestChange(event) {
 };
 
 function fetchImages(request) {
-  const API_KEY = '27957885-8dff7fee3c243073fce7c6825';
-  const IMAGE_TYPE = 'photo';
-  const ORIENTATION = 'horizontal';
-  const SAFE_SEARCH = true;
-  const url = `https://pixabay.com/api/?key=${API_KEY}&q=${request}&image_type=${IMAGE_TYPE}&orientation=${ORIENTATION}&safesearch=${SAFE_SEARCH}&per_page=40&page=${page}`;
+  const searchParams = new URLSearchParams({
+    key: '27957885-8dff7fee3c243073fce7c6825',
+    q: request,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+    per_page: 40,
+    page: page,
+  });
+
+  const url = `https://pixabay.com/api/?${searchParams}`;
 
   return fetch(url)
     .then(response => {
@@ -148,11 +135,10 @@ function fetchImages(request) {
         throw new Error(response.status);
       }
       return response.json();
-    })
-    .catch(console.log);
+    });
 };
 
-function imagesDrawning(imagesArray) {
+function drawImages(imagesArray) {
   return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(imagesArray))
 };
 
