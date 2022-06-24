@@ -69,7 +69,7 @@ function onFormSubmit(event) {
       increaseCounters();
       makeSmoothScroll();
     })
-    .catch(error => Notify.failure(error));
+    .catch(error => Notify.failure(error.message));
 };
 
 function preventDefaultOnLinks() {
