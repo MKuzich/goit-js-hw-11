@@ -11,7 +11,7 @@ const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const inputField = document.querySelector('input');
 const clientScreenHeight = document.documentElement.clientHeight + 200;
-const DELAY = 250;
+const DELAY = 500;
 const debounceOptions = {leading: true, trailing: false};
 
 let name = '';
@@ -19,27 +19,28 @@ let simpleGallery = null;
 
 createSimpleGallery();
 
-form.addEventListener('submit', throttle(onFormSubmit, DELAY));
 inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
-window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
 
-function loadMoreOnScroll() {
+const loadMoreOnScroll = async () => {
   if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight && summaryHits < 500) {
-    fetchImages(name)
-    .then((r) => drawImages(r.hits))
-    .then(() => {
+    const response = await fetchImages(name);
+    try {
+      drawImages(response.hits);
       preventDefaultOnLinks();
       refreshSimpleGallery();
       increaseCounters();
       makeSmoothScroll();
-    })
-    .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
+    } catch (error) {
+      console.log(error);
+    };
   } else if (summaryHits > 500) {
     Notify.warning("We're sorry, but you've reached the end of search results.");
   }
 };
 
-function onFormSubmit(event) {
+window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
+
+const onFormSubmit = async (event) => {
   event.preventDefault();
   requestChange(event);
 
@@ -52,25 +53,26 @@ function onFormSubmit(event) {
     return;
   };
 
-  return fetchImages(name)
-    .then(r => {
-      if (r.hits.length === 0) {
-        throw new Error('Sorry, there are no images matching your search query. Please try again.');
-      } else {
-        if (page === 1) {
-          Notify.success(`Hooray! We found ${r.totalHits} images.`);
-        };
-          drawImages(r.hits);
-      }
-    })
-    .then(() => {
-      preventDefaultOnLinks();
-      refreshSimpleGallery();
-      increaseCounters();
-      makeSmoothScroll();
-    })
-    .catch(error => Notify.failure(error.message));
+  const response = await fetchImages(name);
+  try {
+    if (response.hits.length === 0) {
+      throw new Error('Sorry, there are no images matching your search query. Please try again.');
+    } else {
+      if (page === 1) {
+        Notify.success(`Hooray! We found ${response.totalHits} images.`);
+      };
+        drawImages(response.hits);
+    };
+        preventDefaultOnLinks();
+        refreshSimpleGallery();
+        increaseCounters();
+        makeSmoothScroll();
+  } catch (error) {
+    return Notify.failure(error.message);
+  } 
 };
+
+form.addEventListener('submit', throttle(onFormSubmit, DELAY));
 
 function preventDefaultOnLinks() {
   const links = gallery.querySelectorAll('.gallery__item');

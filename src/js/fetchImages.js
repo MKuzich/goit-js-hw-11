@@ -23,14 +23,16 @@ export function fetchImages(request) {
         per_page: 40,
         page: page
     });
-
     const url = `https://pixabay.com/api/?${searchParams}`;
 
-    return fetch(url)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(response.status);
+    const makeRequest = async () => {
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            return error;
         }
-        return response.json();
-    });
+    };
+
+    return makeRequest();
 };
