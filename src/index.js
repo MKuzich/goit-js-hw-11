@@ -34,6 +34,8 @@ function loadMoreOnScroll() {
       makeSmoothScroll();
     })
     .catch(() => Notify.failure('Sorry, there are no images matching your search query. Please try again.'));
+  } else if (summaryHits > 500) {
+    Notify.warning("We're sorry, but you've reached the end of search results.");
   }
 };
 
