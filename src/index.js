@@ -50,7 +50,7 @@ function onFormSubmit(event) {
     return;
   };
 
-  fetchImages(name)
+  return fetchImages(name)
     .then(r => {
       if (r.hits.length === 0) {
         throw new Error('Sorry, there are no images matching your search query. Please try again.');
@@ -83,14 +83,14 @@ function refreshSimpleGallery() {
   simpleGallery.refresh();
 };
 
-function onFormInput() {
+function onFormInput(e) {
   gallery.innerHTML = "";
   resetCounters();
-  onInputChange(event);
+  onInputChange(e);
 };
 
 function onInputChange(event) {
-  name = event.currentTarget.value.trim();
+  name = event.target.value.trim();
 }
 
 function requestChange(event) {
@@ -99,7 +99,7 @@ function requestChange(event) {
 
 
 function drawImages(imagesArray) {
-  return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(imagesArray))
+  return gallery.insertAdjacentHTML('beforeend', createImagesListMarkup(imagesArray));
 };
 
 
