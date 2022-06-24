@@ -5,12 +5,11 @@ import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
 import { fetchImages, resetCounters, increaseCounters, page, summaryHits } from './js/fetchImages';
 import { createImagesListMarkup } from './js/createImagesListMarkup';
-import { makeSmoothScroll } from './js/pageScrolling';
+import { makeSmoothScroll, deleteSmoothScroll } from './js/pageScrolling';
 
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const inputField = document.querySelector('input');
-const clientScreenHeight = document.documentElement.clientHeight + 200;
 const DELAY = 500;
 const debounceOptions = {leading: true, trailing: false};
 
@@ -20,7 +19,12 @@ let simpleGallery = null;
 createSimpleGallery();
 
 const loadMoreOnScroll = async () => {
-  if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight && summaryHits < 500) {
+  let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
+  let clientScreenHeight = document.documentElement.clientHeight + 100;
+  if (windowRelativeBottom < clientScreenHeight && summaryHits < 500) {
+    if (inputField.value.trim() !== name) {
+      return;
+    }
     const response = await fetchImages(name);
     try {
       drawImages(response.hits);
@@ -85,16 +89,12 @@ function refreshSimpleGallery() {
 };
 
 function onFormInput() {
+  deleteSmoothScroll();
   gallery.innerHTML = "";
-  resetCounters();
-  onInputChange();
+  resetCounters;
 };
 
 inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
-
-function onInputChange() {
-  name = inputField.value.trim();
-}
 
 function requestChange() {
   name = form.elements.searchQuery.value.trim();
