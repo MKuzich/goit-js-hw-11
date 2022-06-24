@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-let page = 1;
-let summaryHits = 0;
+export let page = 1;
+export let summaryHits = 0;
 
 export function increaseCounters() {
     summaryHits = page * 40;

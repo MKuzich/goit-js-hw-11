@@ -3,7 +3,7 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
-import { fetchImages, resetCounters, increaseCounters } from './js/fetchImages';
+import { fetchImages, resetCounters, increaseCounters, page, summaryHits } from './js/fetchImages';
 import { createImagesListMarkup } from './js/createImagesListMarkup';
 import { makeSmoothScroll } from './js/pageScrolling';
 
