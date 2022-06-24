@@ -19,8 +19,6 @@ let simpleGallery = null;
 
 createSimpleGallery();
 
-inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
-
 const loadMoreOnScroll = async () => {
   if (document.documentElement.getBoundingClientRect().bottom < clientScreenHeight && summaryHits < 500) {
     const response = await fetchImages(name);
@@ -42,15 +40,14 @@ window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
 
 const onFormSubmit = async (event) => {
   event.preventDefault();
-  requestChange(event);
+  requestChange();
 
   if (summaryHits > 500) {
-    Notify.warning("We're sorry, but you've reached the end of search results.");
-    return;
+    return Notify.warning("We're sorry, but you've reached the end of search results.");
   };
 
   if (name === "") {
-    return;
+    return Notify.warning("We're sorry, but you've must write something in input field.");
   };
 
   const response = await fetchImages(name);
@@ -69,7 +66,7 @@ const onFormSubmit = async (event) => {
         makeSmoothScroll();
   } catch (error) {
     return Notify.failure(error.message);
-  } 
+  };
 };
 
 form.addEventListener('submit', throttle(onFormSubmit, DELAY));
@@ -87,18 +84,20 @@ function refreshSimpleGallery() {
   simpleGallery.refresh();
 };
 
-function onFormInput(e) {
+function onFormInput() {
   gallery.innerHTML = "";
   resetCounters();
-  onInputChange(e);
+  onInputChange();
 };
 
-function onInputChange(event) {
-  name = event.target.value.trim();
+inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
+
+function onInputChange() {
+  name = inputField.value.trim();
 }
 
-function requestChange(event) {
-  name = event.currentTarget.elements.searchQuery.value.trim();
+function requestChange() {
+  name = form.elements.searchQuery.value.trim();
 };
 
 
