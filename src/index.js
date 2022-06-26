@@ -91,7 +91,7 @@ function refreshSimpleGallery() {
 function onFormInput() {
   deleteSmoothScroll();
   gallery.innerHTML = "";
-  resetCounters;
+  resetCounters();
 };
 
 inputField.addEventListener('input', debounce(onFormInput, DELAY, debounceOptions));
