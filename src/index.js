@@ -10,6 +10,7 @@ import { makeSmoothScroll, deleteSmoothScroll } from './js/pageScrolling';
 const form = document.querySelector('#search-form');
 const gallery = document.querySelector('.gallery');
 const inputField = document.querySelector('input');
+const galleryEnd = document.querySelector('.end-of-gallery');
 const DELAY = 500;
 const debounceOptions = {leading: true, trailing: false};
 
@@ -17,6 +18,37 @@ let name = '';
 let simpleGallery = null;
 
 createSimpleGallery();
+
+// const options = {
+//   rootMargin: '300px',
+//   threshold: 1.0,
+// };
+
+// const observer = new IntersectionObserver(entries => {
+//   entries.forEach(entry => {
+//     if (entry.isIntersecting) {
+//       if (summaryHits < 500) {
+//         if (inputField.value.trim() !== name) {
+//           return;
+//         }
+//         const response = await fetchImages(name);
+//         try {
+//           drawImages(response.hits);
+//           preventDefaultOnLinks();
+//           refreshSimpleGallery();
+//           increaseCounters();
+//           makeSmoothScroll();
+//         } catch (error) {
+//           console.log(error);
+//         };
+//       } else if (summaryHits > 500) {
+//         Notify.warning("We're sorry, but you've reached the end of search results.");
+//       }
+//     }
+//   })
+// }, options);
+
+// observer.observe(galleryEnd);
 
 const loadMoreOnScroll = async () => {
   let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
