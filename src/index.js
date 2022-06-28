@@ -19,60 +19,60 @@ let simpleGallery = null;
 
 createSimpleGallery();
 
-// const options = {
-//   rootMargin: '300px',
-//   threshold: 1.0,
-// };
-
-// const observer = new IntersectionObserver(entries => {
-//   entries.forEach(entry => {
-//     if (entry.isIntersecting) {
-//       if (summaryHits < 500) {
-//         if (inputField.value.trim() !== name) {
-//           return;
-//         }
-//         const response = await fetchImages(name);
-//         try {
-//           drawImages(response.hits);
-//           preventDefaultOnLinks();
-//           refreshSimpleGallery();
-//           increaseCounters();
-//           makeSmoothScroll();
-//         } catch (error) {
-//           console.log(error);
-//         };
-//       } else if (summaryHits > 500) {
-//         Notify.warning("We're sorry, but you've reached the end of search results.");
-//       }
-//     }
-//   })
-// }, options);
-
-// observer.observe(galleryEnd);
-
-const loadMoreOnScroll = async () => {
-  let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
-  let clientScreenHeight = document.documentElement.clientHeight + 100;
-  if (windowRelativeBottom < clientScreenHeight && summaryHits < 500) {
-    if (inputField.value.trim() !== name) {
-      return;
-    }
-    const response = await fetchImages(name);
-    try {
-      drawImages(response.hits);
-      preventDefaultOnLinks();
-      refreshSimpleGallery();
-      increaseCounters();
-      makeSmoothScroll();
-    } catch (error) {
-      console.log(error);
-    };
-  } else if (summaryHits > 500) {
-    Notify.warning("We're sorry, but you've reached the end of search results.");
-  }
+const options = {
+  rootMargin: '300px',
+  threshold: 1.0,
 };
 
-window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(async entry => {
+    if (entry.isIntersecting) {
+      if (summaryHits < 500 && page > 1) {
+        if (inputField.value.trim() !== name) {
+          return;
+        }
+        const response = await fetchImages(name);
+        try {
+          drawImages(response.hits);
+          preventDefaultOnLinks();
+          refreshSimpleGallery();
+          increaseCounters();
+          makeSmoothScroll();
+        } catch (error) {
+          console.log(error);
+        };
+      } else if (summaryHits > 500) {
+        Notify.warning("We're sorry, but you've reached the end of search results.");
+      }
+    }
+  })
+}, options);
+
+observer.observe(galleryEnd);
+
+// const loadMoreOnScroll = async () => {
+//   let windowRelativeBottom = document.documentElement.getBoundingClientRect().bottom;
+//   let clientScreenHeight = document.documentElement.clientHeight + 100;
+//   if (windowRelativeBottom < clientScreenHeight && summaryHits < 500) {
+//     if (inputField.value.trim() !== name) {
+//       return;
+//     }
+//     const response = await fetchImages(name);
+//     try {
+//       drawImages(response.hits);
+//       preventDefaultOnLinks();
+//       refreshSimpleGallery();
+//       increaseCounters();
+//       makeSmoothScroll();
+//     } catch (error) {
+//       console.log(error);
+//     };
+//   } else if (summaryHits > 500) {
+//     Notify.warning("We're sorry, but you've reached the end of search results.");
+//   }
+// };
+
+// window.addEventListener('scroll', throttle(loadMoreOnScroll, DELAY));
 
 const onFormSubmit = async (event) => {
   event.preventDefault();
